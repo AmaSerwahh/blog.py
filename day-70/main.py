@@ -9,8 +9,12 @@ from sqlalchemy.orm import relationship
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
 from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
 from functools import wraps
-#from flask_gravatar import Gravatar
+from dotenv import load_dotenv
+import os
 import hashlib
+
+load_dotenv()
+
 
 def get_gravatar_url(email, size=100):
     email = email.lower().encode('utf-8')
@@ -18,7 +22,7 @@ def get_gravatar_url(email, size=100):
     return f"https://www.gravatar.com/avatar/{hash_email}?s={size}&d=identicon"
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 ckeditor = CKEditor(app)
 Bootstrap(app)
 
