@@ -69,8 +69,8 @@ class Comment(db.Model):
     parent_post = db.relationship("BlogPost", back_populates="comments")
     text = db.Column(db.Text, nullable=False)
 
-# with app.app_context():
-#     db.create_all()
+with app.app_context():
+    db.create_all()
 
 def get_gravatar_url(email, size=100):
     email = email.lower().encode('utf-8')
