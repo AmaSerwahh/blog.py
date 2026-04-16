@@ -13,13 +13,13 @@ from dotenv import load_dotenv
 import os
 import hashlib
 
+db_url = os.environ.get("DATABASE_URL")
+
+if db_url and db_url.startswith("postgres://"):
+    db_url = db_url.replace("postgres://", "postgresql://", 1)
+
+
 load_dotenv()
-
-
-def get_gravatar_url(email, size=100):
-    email = email.lower().encode('utf-8')
-    hash_email = hashlib.md5(email).hexdigest()
-    return f"https://www.gravatar.com/avatar/{hash_email}?s={size}&d=identicon"
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
@@ -27,7 +27,7 @@ ckeditor = CKEditor(app)
 Bootstrap(app)
 
 ##CONNECT TO DB
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = db_url or 'sqlite:///blog.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -72,6 +72,10 @@ class Comment(db.Model):
 # with app.app_context():
 #     db.create_all()
 
+def get_gravatar_url(email, size=100):
+    email = email.lower().encode('utf-8')
+    hash_email = hashlib.md5(email).hexdigest()
+    return f"https://www.gravatar.com/avatar/{hash_email}?s={size}&d=identicon"
 
 @login_manager.user_loader
 def load_user(user_id):
